@@ -12,7 +12,7 @@ xcodebuild -scheme ChessMac -configuration Release -derivedDataPath ./build -des
 
 echo "📦 Packaging custom branded DMG..."
 # Cleanup old DMG
-rm -f ~/Desktop/Chess.com.dmg
+rm -f ~/Downloads/Chess.com.dmg
 
 # Create temp source directory for packaging
 mkdir -p ./build/dmg_temp
@@ -30,14 +30,14 @@ create-dmg \
   --icon "Chess.com.app" 150 200 \
   --app-drop-link 450 200 \
   --hide-extension "Chess.com.app" \
-  ~/Desktop/Chess.com.dmg \
+  ~/Downloads/Chess.com.dmg \
   ./build/dmg_temp/
 
-echo "🏷️ Setting custom Desktop icon for the DMG file..."
+echo "🏷️ Setting custom Volume icon for the DMG file..."
 # Apply the custom disk icon to the .dmg file itself
-swift -e 'import Cocoa; let img = NSImage(contentsOfFile: "./ChessMac/Resources/DmgVolumeIcon.icns"); NSWorkspace.shared.setIcon(img, forFile: "/Users/shibin_tmz/Desktop/Chess.com.dmg", options: [])'
+swift -e 'import Cocoa; let img = NSImage(contentsOfFile: "./ChessMac/Resources/DmgVolumeIcon.icns"); NSWorkspace.shared.setIcon(img, forFile: "/Users/shibin_tmz/Downloads/Chess.com.dmg", options: [])'
 
 echo "🧹 Cleaning up build caches..."
 rm -rf ./build
 
-echo "✅ Branded DMG successfully generated on Desktop!"
+echo "✅ Branded DMG successfully generated in Downloads!"
