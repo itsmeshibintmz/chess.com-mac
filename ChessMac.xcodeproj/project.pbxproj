@@ -10,6 +10,7 @@
 		AA01000000000001 /* ChessMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF01000000000001 /* ChessMacApp.swift */; };
 		AA01000000000002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF01000000000002 /* AppDelegate.swift */; };
 		AA0100000000000B /* Color+Chess.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0100000000000B /* Color+Chess.swift */; };
+		AA0100000000009B /* ChessTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0100000000009B /* ChessTheme.swift */; };
 		AA0100000000000C /* View+LiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0100000000000C /* View+LiquidGlass.swift */; };
 		AA0100000000001E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0100000000001E /* SettingsView.swift */; };
 		AA01000000000025 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF01000000000025 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 		AF01000000000001 /* ChessMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChessMacApp.swift; sourceTree = "<group>"; };
 		AF01000000000002 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF0100000000000B /* Color+Chess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Chess.swift"; sourceTree = "<group>"; };
+		AF0100000000009B /* ChessTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChessTheme.swift"; sourceTree = "<group>"; };
 		AF0100000000000C /* View+LiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+LiquidGlass.swift"; sourceTree = "<group>"; };
 		AF0100000000001E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		AF01000000000025 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 		FF000000000000004 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				AF0100000000009B /* ChessTheme.swift */,
 				AF010000000000A1 /* UpdateManager.swift */,
 				FF000000000000008 /* Extensions */,
 			);
@@ -242,6 +245,7 @@
 				AA01000000000001 /* ChessMacApp.swift in Sources */,
 				AA01000000000002 /* AppDelegate.swift in Sources */,
 				AA0100000000000B /* Color+Chess.swift in Sources */,
+				AA0100000000009B /* ChessTheme.swift in Sources */,
 				AA0100000000000C /* View+LiquidGlass.swift in Sources */,
 				AA01000000000028 /* ChessWebView.swift in Sources */,
 				AA01000000000029 /* ChessWebViewContainer.swift in Sources */,

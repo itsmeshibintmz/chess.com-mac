@@ -15,6 +15,7 @@ struct ChessWebView: NSViewRepresentable {
     let blockAds: Bool
     let defaultLandingPage: String
     let appTheme: String
+    let chessTheme: String
 
     class CommandCoordinator {
         var goBackAction: (() -> Void)?
@@ -198,7 +199,10 @@ struct ChessWebView: NSViewRepresentable {
             nsView.appearance = nil // follows system
         }
 
-        // 2. Sync Swift settings changes to Javascript and handle Pure Black & Light Theme overrides
+        // 2. Resolve the Chess.com theme configurations
+        let selectedTheme = ChessTheme.allThemes.first(where: { $0.id == chessTheme }) ?? .defaultTheme
+
+        // 3. Sync Swift settings changes to Javascript and handle Pure Black & Light Theme & custom Monkeytype theme overrides
         let js = """
         window.chessMacSettings = {
             blockAds: \(blockAds)
@@ -250,9 +254,63 @@ struct ChessWebView: NSViewRepresentable {
                 window.chessThemeInterval = setInterval(forceThemeClasses, 1000);
             }
             
-            // Manage AMOLED Pure Black styling stylesheet
+            // Manage custom Monkeytype theme stylesheet
+            var customThemeId = "\(selectedTheme.id)";
+            var customThemeStyle = document.getElementById('chessmac-customtheme-style');
+            if (customThemeId !== "default") {
+                var theme = {
+                    bg: "\(selectedTheme.bg)",
+                    panel: "\(selectedTheme.panel)",
+                    text: "\(selectedTheme.text)",
+                    sub: "\(selectedTheme.sub)",
+                    accent: "\(selectedTheme.accent)"
+                };
+                var css = `
+                    body, html, #navigation, .navigation, .nav-menu, .nav-container, #sb, .sb, .layout-container, #layout-container, .game-layout-sidebar, .board-layout-sidebar, .main, #main, .main-layout, .page-layout, .board-layout-component, .tab-container, .game-layout-main, .board-layout-main, .sidebar-component, .page-container, .standard-layout, .live-game-layout {
+                        background-color: ${theme.bg} !important;
+                        background: ${theme.bg} !important;
+                    }
+                    .sidebar-component, .panel-component, .tab-container, .tab-content, .board-layout-sidebar, .game-layout-sidebar, .nav-menu-sub, .menu-sub, .list-component, .post-container, .article-container, .user-profile-card, .play-control-controller, .game-controls-controller, .sidebar-tab-content, .board-layout-controls, .game-controls-component, .round-player-component {
+                        background-color: ${theme.panel} !important;
+                        background: ${theme.panel} !important;
+                    }
+                    .board .square.dark, .board-layout-component .square.dark, div[class*="square"][class*="dark"] {
+                        background-color: ${theme.panel} !important;
+                        background-image: none !important;
+                    }
+                    .board .square.light, .board-layout-component .square.light, div[class*="square"][class*="light"] {
+                        background-color: color-mix(in srgb, ${theme.bg} 35%, ${theme.text} 65%) !important;
+                        background-image: none !important;
+                    }
+                    body, p, span, a, h1, h2, h3, h4, h5, h6, td, th, div:not(.square) {
+                        color: ${theme.text} !important;
+                    }
+                    .sub-text, .text-muted, .gray, .meta, .date, .time, .author {
+                        color: ${theme.sub} !important;
+                    }
+                    a, .btn-primary, .button-primary, .active, .selected, .ui_v5-button-component.ui_v5-button-primary, .play-controller-button, .sidebar-nav-link.active, .nav-menu-link.active {
+                        color: ${theme.accent} !important;
+                        border-color: ${theme.accent} !important;
+                    }
+                    .btn-primary, .button-primary, .ui_v5-button-component.ui_v5-button-primary, .play-controller-button {
+                        background-color: ${theme.accent} !important;
+                        background: ${theme.accent} !important;
+                        color: ${theme.bg} !important;
+                    }
+                `;
+                if (!customThemeStyle) {
+                    customThemeStyle = document.createElement('style');
+                    customThemeStyle.id = 'chessmac-customtheme-style';
+                    document.head.appendChild(customThemeStyle);
+                }
+                customThemeStyle.innerHTML = css;
+            } else {
+                if (customThemeStyle) customThemeStyle.remove();
+            }
+            
+            // Manage AMOLED Pure Black styling stylesheet (only when custom theme is default)
             var style = document.getElementById('chessmac-pureblack-style');
-            var pureBlackEnabled = \(appTheme == "dark");
+            var pureBlackEnabled = \(appTheme == "dark") && (customThemeId === "default");
             if (pureBlackEnabled) {
                 if (!style) {
                     style = document.createElement('style');

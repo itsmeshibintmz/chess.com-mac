@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage("blockAds") private var blockAds = true
     @AppStorage("defaultLandingPage") private var defaultLandingPage = "https://www.chess.com"
     @AppStorage("appTheme") private var appTheme = "system"
+    @AppStorage("chessTheme") private var chessTheme = "default"
     
     // Shortcuts toggles
     @AppStorage("showPlayShortcut") private var showPlayShortcut = true
@@ -179,6 +180,38 @@ struct SettingsView: View {
                         Text("System Default").tag("system")
                         Text("Light").tag("light")
                         Text("Dark (Pure Black)").tag("dark")
+                    }
+                    .pickerStyle(.menu)
+                    .tint(Color.chessGreen)
+                    .frame(width: 140)
+                }
+
+                Divider().background(Color.primary.opacity(0.06))
+
+                // Chess Theme Picker Row
+                HStack(spacing: 12) {
+                    Image(systemName: "circle.grid.hex.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.chessGreen)
+                        .frame(width: 22, height: 22)
+                        .background(Color.primary.opacity(0.03))
+                        .cornerRadius(6)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Chess.com Theme")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(Color.primary)
+                        Text("Choose from 180+ custom Monkeytype style themes.")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Color.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Picker("", selection: $chessTheme) {
+                        ForEach(ChessTheme.allThemes) { theme in
+                            Text(theme.name).tag(theme.id)
+                        }
                     }
                     .pickerStyle(.menu)
                     .tint(Color.chessGreen)

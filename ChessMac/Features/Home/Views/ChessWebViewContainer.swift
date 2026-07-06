@@ -13,6 +13,7 @@ struct ChessWebViewContainer: View {
     @AppStorage("blockAds") private var blockAds = true
     @AppStorage("defaultLandingPage") private var defaultLandingPage = "https://www.chess.com"
     @AppStorage("appTheme") private var appTheme = "system"
+    @AppStorage("chessTheme") private var chessTheme = "default"
 
     // Floating pill hover states & auto-hide timer
     @State private var showPill = false
@@ -44,7 +45,8 @@ struct ChessWebViewContainer: View {
                     commandCoordinator: commandCoordinator,
                     blockAds: blockAds,
                     defaultLandingPage: defaultLandingPage,
-                    appTheme: appTheme
+                    appTheme: appTheme,
+                    chessTheme: chessTheme
                 )
                 .ignoresSafeArea()
 
