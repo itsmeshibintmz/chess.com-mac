@@ -1,45 +1,58 @@
-# Chess.com macOS Web App
+# Chess.com macOS Application
 
-An unofficial, native-feel macOS desktop application wrapper for **Chess.com**. Built using **SwiftUI** and **AppKit**, this wrapper features custom theme accents, a floating navigation pill, an integrated ad-blocker, and deep macOS integration.
+A beautiful, native-feel macOS desktop app for playing on **Chess.com**. Built with macOS design guidelines in mind, this app features smooth window effects, a custom navigation pill dock, and a built-in ad-blocker.
 
 ---
 
 ## 📸 Screenshots
 
-| Main Application View | Preferences Panel (⌘,) | Custom DMG Installer |
+| Main Chess App View | Preferences (⌘,) | Custom DMG Installer |
 | :---: | :---: | :---: |
 | ![Chess.com Main View](images/app_screenshot.png) | ![Preferences Panel](images/settings_screenshot.png) | ![DMG Installer](images/dmg_screenshot.png) |
 
 ---
 
-## ✨ Features
+## 🚀 How to Install & Play (For Everyone)
 
-*   **Apple Liquid Glass Design Language**: floating capsule pill controller, continuous corner radius clipping (`.smoothCorners`), specular reflections, and responsive hover-lift transitions (`.hoverLift`).
-*   **Floating Control Pill Dock**: A beautiful capsule bar that floats at the bottom-center of the window. Automatically slides in when the mouse moves and hides when inactive. Contains:
-    *   *System Controls*: Back, Forward, Reload, Home.
-    *   *App Shortcuts*: Play Online, Puzzles, vs. Computer, and Lessons.
-    *   *Quick Toggle*: Shield icon to turn the Ad-Blocker on/off instantly.
-*   **Built-in Ad-Blocker**: Injects custom stylesheets to filter out advertisements, banners, and sidebar commercial slots, keeping your game board completely clean.
-*   **Native Preferences Panel (⌘,)**: Fully configurable macOS settings window allowing you to customize:
-    *   *Default landing page* (Dashboard, Play, Puzzles, Computer, or Lessons).
-    *   *Visible Shortcuts* in the bottom floating capsule bar.
-    *   *Ad-Blocker* toggle.
-*   **Deep macOS Integration**:
-    *   **Traffic Lights Alignment**: Left-hand navigation shifted down by `36px` to prevent overlapping macOS window controls (close/minimize/zoom).
-    *   **Draggable Header**: Double-click titlebar zoom and standard window dragging.
-    *   **Safari User-Agent Spoofing**: Fully compatible with Google, Apple, and Facebook OAuth login flows.
-    *   **Elegant Scrollbars**: Customized scrollbars that look great in both dark and light modes.
+Since Chess.com doesn't offer a official macOS app, you can install this desktop client in two simple steps:
+
+### 1. Download the App
+* Go to the **[Releases](https://github.com/itsmeshibintmz/chess.com-mac/releases)** section on the right side of the GitHub page.
+* Download the latest **`Chess.com.dmg`** installer file. (Alternatively, if you run the developer build script locally, the installer will automatically be generated in your **Downloads** folder).
+
+### 2. Install on your Mac
+* Open the downloaded **`Chess.com.dmg`** file.
+* Drag the **Chess.com** icon into your **Applications** folder.
+* Launch it from your Applications folder or Launchpad!
+
+*Note: Since this is a personal app built locally, your Mac might show a "blocked from opening because it is not from an identified developer" warning on first launch. To open it, simply right-click (or Control-click) the app icon in your Applications folder and select **Open**, then click **Open** again in the dialog.*
 
 ---
 
-## 🛠️ Build & Installation
+## ✨ Features
 
-### Build Requirements
+*   **Floating Navigation Pill**: A modern controls capsule bar that floats at the bottom center of the screen. It slides up when you move your mouse and auto-hides when you are playing so it never gets in the way.
+*   **Built-in Ad-Blocker**: Includes an ad-blocker designed to hide advertisement banners and side commercial panels on Chess.com for cleaner boards. You can toggle this on or off instantly using the **Shield** icon on the navigation pill.
+*   **Quick Shortcuts**: The bottom pill has buttons to take you instantly to:
+    *   **Play Online** 🎮
+    *   **Puzzles** 🧩
+    *   **vs. Computer** 💻
+    *   **Lessons** 🎓
+*   **Custom Preferences (⌘,)**: Customize which shortcut buttons appear in the pill and choose which page loads automatically when the app starts.
+*   **Google & Facebook Login Support**: Built-in support to allow logging into your Chess.com account securely with your Google, Apple, or Facebook profiles.
+
+---
+
+## 🛠️ How to Compile (For Developers)
+
+If you want to build the application from scratch using Xcode:
+
+### Requirements
 *   macOS 13.0 or higher
 *   Xcode 15.0 or higher
 *   `create-dmg` (optional, for installer packaging)
 
-### Compiling and Running
+### Steps
 1. Clone the repository:
    ```bash
    git clone https://github.com/itsmeshibintmz/chess.com-mac.git
@@ -47,12 +60,12 @@ An unofficial, native-feel macOS desktop application wrapper for **Chess.com**. 
    ```
 2. Open `ChessMac.xcodeproj` in Xcode and click **Run**.
 
-### Generating a Branded DMG Installer
-We provide a helper packaging script:
+### Creating the DMG Installer
+To build a release installer like the one in the Releases section, run:
 ```bash
 ./build_dmg.sh
 ```
-This script compiles a clean Release build and outputs a fully customized, branded disk image installer **`Chess.com.dmg`** directly into your **Downloads** folder.
+This script will build a clean Release build and output the final **`Chess.com.dmg`** file directly to your **Downloads** folder.
 
 ---
 
