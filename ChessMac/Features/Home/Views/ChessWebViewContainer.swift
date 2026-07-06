@@ -11,6 +11,7 @@ struct ChessWebViewContainer: View {
 
     // App Preferences
     @AppStorage("blockAds") private var blockAds = true
+    @AppStorage("defaultLandingPage") private var defaultLandingPage = "https://www.chess.com"
 
     // Floating pill hover states & auto-hide timer
     @State private var showPill = false
@@ -21,65 +22,78 @@ struct ChessWebViewContainer: View {
     @ObservedObject private var updateManager = UpdateManager.shared
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Color.chessDarkBG.ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack(alignment: .bottom) {
+                Color.chessDarkBG.ignoresSafeArea()
 
-            // Full-bleed web view
-            ChessWebView(
-                url: URL(string: "https://www.chess.com")!,
-                canGoBack: $canGoBack,
-                canGoForward: $canGoForward,
-                isLoading: $isLoading,
-                commandCoordinator: commandCoordinator,
-                blockAds: blockAds
-            )
-            .ignoresSafeArea()
+                // Full-bleed web view
+                ChessWebView(
+                    url: URL(string: defaultLandingPage) ?? URL(string: "https://www.chess.com")!,
+                    canGoBack: $canGoBack,
+                    canGoForward: $canGoForward,
+                    isLoading: $isLoading,
+                    commandCoordinator: commandCoordinator,
+                    blockAds: blockAds,
+                    defaultLandingPage: defaultLandingPage
+                )
+                .ignoresSafeArea()
 
-            // Transparent titlebar drag region (allows window dragging while keeping full-bleed look)
-            DraggableArea()
-                .frame(height: 28)
-                .ignoresSafeArea(edges: .top)
+                // Transparent titlebar drag region (allows window dragging while keeping full-bleed look)
+                DraggableArea()
+                    .frame(height: 28)
+                    .ignoresSafeArea(edges: .top)
 
-            // Floating Liquid Glass Control Pill Dock
-            LiquidGlassPill(
-                canGoBack: canGoBack,
-                canGoForward: canGoForward,
-                goBackAction: { commandCoordinator.goBackAction?() },
-                goForwardAction: { commandCoordinator.goForwardAction?() },
-                reloadAction: { commandCoordinator.reloadAction?() },
-                homeAction: { commandCoordinator.loadHomeAction?() },
-                playAction: { commandCoordinator.loadPlayAction?() },
-                puzzlesAction: { commandCoordinator.loadPuzzlesAction?() },
-                computerAction: { commandCoordinator.loadComputerAction?() },
-                lessonsAction: { commandCoordinator.loadLessonsAction?() },
-                isHoveredSelf: $isHoveringPill
-            )
-            .padding(.bottom, 24)
-            .offset(y: (showPill || isHoveringPill) ? 0 : 80)
-            .opacity((showPill || isHoveringPill) ? 1.0 : 0.0)
-            .allowsHitTesting(showPill || isHoveringPill)
-            .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showPill || isHoveringPill)
-        }
-        .preferredColorScheme(.dark)
-        // Detect mouse movement inside the window using continuous hover tracking
-        .onContinuousHover { phase in
-            switch phase {
-            case .active:
-                // Mouse is moving, reveal the control dock
-                if !showPill {
-                    withAnimation(.easeInOut(duration: 0.25)) {
-                        showPill = true
+                // Floating Liquid Glass Control Pill Dock
+                LiquidGlassPill(
+                    canGoBack: canGoBack,
+                    canGoForward: canGoForward,
+                    goBackAction: { commandCoordinator.goBackAction?() },
+                    goForwardAction: { commandCoordinator.goForwardAction?() },
+                    reloadAction: { commandCoordinator.reloadAction?() },
+                    homeAction: { commandCoordinator.loadHomeAction?() },
+                    playAction: { commandCoordinator.loadPlayAction?() },
+                    puzzlesAction: { commandCoordinator.loadPuzzlesAction?() },
+                    computerAction: { commandCoordinator.loadComputerAction?() },
+                    lessonsAction: { commandCoordinator.loadLessonsAction?() },
+                    isHoveredSelf: $isHoveringPill
+                )
+                .padding(.bottom, 24)
+                .offset(y: (showPill || isHoveringPill) ? 0 : 80)
+                .opacity((showPill || isHoveringPill) ? 1.0 : 0.0)
+                .allowsHitTesting(showPill || isHoveringPill)
+                .animation(.spring(response: 0.4, dampingFraction: 0.75), value: showPill || isHoveringPill)
+            }
+            .onContinuousHover { phase in
+                switch phase {
+                case .active(let location):
+                    let height = geometry.size.height
+                    // Only show the pill if the cursor is in the bottom 120 points of the window
+                    if location.y > height - 120 {
+                        if !showPill {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                showPill = true
+                            }
+                        }
+                        resetHideTimer()
+                    } else {
+                        // If cursor is outside the bottom region, hide the pill unless currently hovering directly on the pill
+                        if !isHoveringPill && showPill {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                showPill = false
+                            }
+                        }
                     }
+                case .ended:
+                    // Mouse left the app window boundary, hide dock
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        showPill = false
+                    }
+                    hideTimer?.invalidate()
                 }
-                resetHideTimer()
-            case .ended:
-                // Mouse left the app window boundary, hide dock
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    showPill = false
-                }
-                hideTimer?.invalidate()
             }
         }
+        .ignoresSafeArea()
+        .preferredColorScheme(.dark)
         .onAppear {
             updateManager.checkForUpdates()
         }

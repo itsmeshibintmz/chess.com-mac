@@ -13,6 +13,7 @@ struct ChessWebView: NSViewRepresentable {
 
     // Preferences properties passed from container
     let blockAds: Bool
+    let defaultLandingPage: String
 
     class CommandCoordinator {
         var goBackAction: (() -> Void)?
@@ -155,8 +156,9 @@ struct ChessWebView: NSViewRepresentable {
         commandCoordinator.reloadAction = { [weak webView] in
             webView?.reload()
         }
-        commandCoordinator.loadHomeAction = { [weak webView] in
-            let request = URLRequest(url: URL(string: "https://www.chess.com")!)
+        commandCoordinator.loadHomeAction = { [weak webView, weak coordinator = context.coordinator] in
+            guard let parent = coordinator?.parent else { return }
+            let request = URLRequest(url: URL(string: parent.defaultLandingPage) ?? URL(string: "https://www.chess.com")!)
             webView?.load(request)
         }
         commandCoordinator.loadPlayAction = { [weak webView] in
@@ -184,6 +186,7 @@ struct ChessWebView: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: WKWebView, context: Context) {
+        context.coordinator.parent = self
         // Sync Swift settings changes to Javascript dynamically
         let js = """
         window.chessMacSettings = {
