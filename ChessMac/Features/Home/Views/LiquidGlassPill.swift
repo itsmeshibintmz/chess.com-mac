@@ -43,7 +43,7 @@ struct LiquidGlassPill: View {
 
             Divider()
                 .frame(height: 18)
-                .background(Color.white.opacity(0.12))
+                .background(Color.primary.opacity(0.12))
 
             // 3. Reload button
             PillButton(icon: "arrow.clockwise", isEnabled: true, activeColor: Color.chessGreen) {
@@ -58,7 +58,7 @@ struct LiquidGlassPill: View {
             if showPlayShortcut || showPuzzlesShortcut || showComputerShortcut || showLessonsShortcut {
                 Divider()
                     .frame(height: 18)
-                    .background(Color.white.opacity(0.12))
+                    .background(Color.primary.opacity(0.12))
 
                 // 5. Play Online
                 if showPlayShortcut {
@@ -90,7 +90,7 @@ struct LiquidGlassPill: View {
 
                 Divider()
                     .frame(height: 18)
-                    .background(Color.white.opacity(0.12))
+                    .background(Color.primary.opacity(0.12))
             }
 
             // 9. Ad-Blocker Toggle
@@ -152,7 +152,7 @@ struct LiquidGlassPill: View {
     private var settingsLabel: some View {
         Image(systemName: "gearshape.fill")
             .font(.system(size: 13, weight: .bold))
-            .foregroundStyle(isSettingsHovered ? Color.chessGreen : .white.opacity(0.75))
+            .foregroundStyle(isSettingsHovered ? Color.chessGreen : Color.primary.opacity(0.75))
             .frame(width: 32, height: 32)
             .background {
                 if isSettingsHovered {
@@ -180,7 +180,7 @@ struct PillButton: View {
                 .font(.system(size: 13, weight: .bold))
                 .foregroundStyle(
                     isSelected ? activeColor :
-                    (isEnabled ? (isHovered ? activeColor : .white.opacity(0.75)) : .white.opacity(0.2))
+                    (isEnabled ? (isHovered ? activeColor : Color.primary.opacity(0.75)) : Color.primary.opacity(0.2))
                 )
                 .frame(width: 32, height: 32)
                 .background {

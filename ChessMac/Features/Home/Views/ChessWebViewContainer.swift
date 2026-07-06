@@ -12,6 +12,7 @@ struct ChessWebViewContainer: View {
     // App Preferences
     @AppStorage("blockAds") private var blockAds = true
     @AppStorage("defaultLandingPage") private var defaultLandingPage = "https://www.chess.com"
+    @AppStorage("appTheme") private var appTheme = "system"
 
     // Floating pill hover states & auto-hide timer
     @State private var showPill = false
@@ -21,10 +22,18 @@ struct ChessWebViewContainer: View {
     // Automatic update coordinator
     @ObservedObject private var updateManager = UpdateManager.shared
 
+    private var windowBackgroundColor: Color {
+        switch appTheme {
+        case "dark": return Color.black
+        case "light": return Color(nsColor: .windowBackgroundColor)
+        default: return Color(nsColor: .windowBackgroundColor)
+        }
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
-                Color.chessDarkBG.ignoresSafeArea()
+                windowBackgroundColor.ignoresSafeArea()
 
                 // Full-bleed web view
                 ChessWebView(
@@ -34,7 +43,8 @@ struct ChessWebViewContainer: View {
                     isLoading: $isLoading,
                     commandCoordinator: commandCoordinator,
                     blockAds: blockAds,
-                    defaultLandingPage: defaultLandingPage
+                    defaultLandingPage: defaultLandingPage,
+                    appTheme: appTheme
                 )
                 .ignoresSafeArea()
 
@@ -93,7 +103,7 @@ struct ChessWebViewContainer: View {
             }
         }
         .ignoresSafeArea()
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(appTheme == "system" ? nil : (appTheme == "dark" ? .dark : .light))
         .onAppear {
             updateManager.checkForUpdates()
         }

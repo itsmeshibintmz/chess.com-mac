@@ -6,6 +6,7 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("blockAds") private var blockAds = true
     @AppStorage("defaultLandingPage") private var defaultLandingPage = "https://www.chess.com"
+    @AppStorage("appTheme") private var appTheme = "system"
     
     // Shortcuts toggles
     @AppStorage("showPlayShortcut") private var showPlayShortcut = true
@@ -26,6 +27,15 @@ struct SettingsView: View {
             case .general: return "gearshape.fill"
             case .navigation: return "dock.rectangle"
             }
+        }
+    }
+
+    
+    private var paneBackgroundColor: Color {
+        switch appTheme {
+        case "light": return Color(nsColor: .windowBackgroundColor).opacity(0.8)
+        case "dark": return Color.black.opacity(0.8)
+        default: return Color(nsColor: .windowBackgroundColor).opacity(0.8)
         }
     }
 
@@ -66,7 +76,7 @@ struct SettingsView: View {
             .background(.ultraThinMaterial)
             .overlay(
                 Rectangle()
-                    .fill(Color.white.opacity(0.06))
+                    .fill(Color.primary.opacity(0.06))
                     .frame(width: 1),
                 alignment: .trailing
             )
@@ -81,10 +91,10 @@ struct SettingsView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.chessDarkBG.opacity(0.65).background(.thinMaterial))
+            .background(paneBackgroundColor.background(.thinMaterial))
         }
         .frame(width: 580, height: 360)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(appTheme == "system" ? nil : (appTheme == "dark" ? .dark : .light))
         .navigationTitle("Preferences")
     }
 
@@ -93,10 +103,10 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("General Preferences")
                     .font(.system(size: 18, weight: .black))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.primary)
                 Text("Customize your app behavior and browsing experiences.")
                     .font(.system(size: 11))
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.secondary)
             }
             
             VStack(spacing: 10) {
@@ -109,7 +119,7 @@ struct SettingsView: View {
                     iconColor: .orange
                 )
                 
-                Divider().background(Color.white.opacity(0.06))
+                Divider().background(Color.primary.opacity(0.06))
 
                 // Default Landing Page Selector
                 HStack(spacing: 12) {
@@ -117,16 +127,16 @@ struct SettingsView: View {
                         .font(.system(size: 14))
                         .foregroundStyle(Color.chessGreen)
                         .frame(width: 22, height: 22)
-                        .background(Color.white.opacity(0.03))
+                        .background(Color.primary.opacity(0.03))
                         .cornerRadius(6)
                     
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Default Landing Page")
                             .font(.system(size: 13, weight: .bold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color.primary)
                         Text("Choose which section loads when launching the app.")
                             .font(.system(size: 11))
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color.secondary)
                     }
                     
                     Spacer()
@@ -142,13 +152,45 @@ struct SettingsView: View {
                     .tint(Color.chessGreen)
                     .frame(width: 140)
                 }
+
+                Divider().background(Color.primary.opacity(0.06))
+
+                // App Theme Picker Row
+                HStack(spacing: 12) {
+                    Image(systemName: "paintpalette.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.chessGreen)
+                        .frame(width: 22, height: 22)
+                        .background(Color.primary.opacity(0.03))
+                        .cornerRadius(6)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("App Theme")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundStyle(Color.primary)
+                        Text("Switch between System, Light, and Dark (Pure Black).")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Color.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Picker("", selection: $appTheme) {
+                        Text("System Default").tag("system")
+                        Text("Light").tag("light")
+                        Text("Dark (Pure Black)").tag("dark")
+                    }
+                    .pickerStyle(.menu)
+                    .tint(Color.chessGreen)
+                    .frame(width: 140)
+                }
             }
             .padding(14)
-            .background(Color.white.opacity(0.02))
+            .background(Color.primary.opacity(0.02))
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.white.opacity(0.05), lineWidth: 1)
+                    .stroke(Color.primary.opacity(0.05), lineWidth: 1)
             )
 
             Spacer()
@@ -161,10 +203,10 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Control Pill Shortcuts")
                     .font(.system(size: 18, weight: .black))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.primary)
                 Text("Select which quick actions appear in the floating controls bar at the bottom.")
                     .font(.system(size: 11))
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.secondary)
             }
             
             VStack(spacing: 10) {
@@ -176,7 +218,7 @@ struct SettingsView: View {
                     iconColor: Color.chessGreen
                 )
                 
-                Divider().background(Color.white.opacity(0.06))
+                Divider().background(Color.primary.opacity(0.06))
 
                 generalToggleRow(
                     isOn: $showPuzzlesShortcut,
@@ -186,7 +228,7 @@ struct SettingsView: View {
                     iconColor: Color.chessGreen
                 )
 
-                Divider().background(Color.white.opacity(0.06))
+                Divider().background(Color.primary.opacity(0.06))
 
                 generalToggleRow(
                     isOn: $showComputerShortcut,
@@ -196,7 +238,7 @@ struct SettingsView: View {
                     iconColor: Color.chessGreen
                 )
 
-                Divider().background(Color.white.opacity(0.06))
+                Divider().background(Color.primary.opacity(0.06))
 
                 generalToggleRow(
                     isOn: $showLessonsShortcut,
@@ -207,11 +249,11 @@ struct SettingsView: View {
                 )
             }
             .padding(14)
-            .background(Color.white.opacity(0.02))
+            .background(Color.primary.opacity(0.02))
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.white.opacity(0.05), lineWidth: 1)
+                    .stroke(Color.primary.opacity(0.05), lineWidth: 1)
             )
 
             Spacer()
@@ -225,13 +267,13 @@ struct SettingsView: View {
                 .font(.system(size: 14))
                 .foregroundStyle(iconColor)
                 .frame(width: 22, height: 22)
-                .background(Color.white.opacity(0.03))
+                .background(Color.primary.opacity(0.03))
                 .cornerRadius(6)
                 .overlay(
                     Group {
                         if hasStroke {
                             RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                                .stroke(Color.primary.opacity(0.15), lineWidth: 1)
                         }
                     }
                 )
@@ -239,10 +281,10 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.primary)
                 Text(description)
                     .font(.system(size: 11))
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.secondary)
             }
             
             Spacer()

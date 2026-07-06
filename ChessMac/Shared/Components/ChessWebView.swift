@@ -14,6 +14,7 @@ struct ChessWebView: NSViewRepresentable {
     // Preferences properties passed from container
     let blockAds: Bool
     let defaultLandingPage: String
+    let appTheme: String
 
     class CommandCoordinator {
         var goBackAction: (() -> Void)?
@@ -187,7 +188,17 @@ struct ChessWebView: NSViewRepresentable {
 
     func updateNSView(_ nsView: WKWebView, context: Context) {
         context.coordinator.parent = self
-        // Sync Swift settings changes to Javascript dynamically
+        
+        // 1. Force the appearance of the webview to match light/dark settings
+        if appTheme == "light" {
+            nsView.appearance = NSAppearance(named: .aqua)
+        } else if appTheme == "dark" {
+            nsView.appearance = NSAppearance(named: .darkAqua)
+        } else {
+            nsView.appearance = nil // follows system
+        }
+
+        // 2. Sync Swift settings changes to Javascript and handle Pure Black & Light Theme overrides
         let js = """
         window.chessMacSettings = {
             blockAds: \(blockAds)
@@ -195,6 +206,85 @@ struct ChessWebView: NSViewRepresentable {
         if (typeof window.updateAppPreferences === 'function') {
             window.updateAppPreferences();
         }
+        
+        (function() {
+            // Force Chess.com HTML classes to match theme choice (vital for single-page navigations)
+            function forceThemeClasses() {
+                var theme = "\(appTheme)";
+                var html = document.documentElement;
+                var body = document.body;
+                if (!html) return;
+                
+                if (theme === "light") {
+                    html.classList.remove("dark-mode", "theme-dark", "dark");
+                    html.classList.add("light-mode", "theme-light", "light");
+                    html.style.colorScheme = "light";
+                    if (body) {
+                        body.classList.remove("dark-mode", "theme-dark", "dark");
+                        body.classList.add("light-mode", "theme-light", "light");
+                        body.style.colorScheme = "light";
+                    }
+                } else if (theme === "dark") {
+                    html.classList.remove("light-mode", "theme-light", "light");
+                    html.classList.add("dark-mode", "theme-dark", "dark");
+                    html.style.colorScheme = "dark";
+                    if (body) {
+                        body.classList.remove("light-mode", "theme-light", "light");
+                        body.classList.add("dark-mode", "theme-dark", "dark");
+                        body.style.colorScheme = "dark";
+                    }
+                } else {
+                    // System theme: Clear manual overrides and let system prefers-color-scheme rule
+                    html.style.colorScheme = "";
+                    if (body) body.style.colorScheme = "";
+                }
+            }
+            forceThemeClasses();
+            
+            // Run periodically to catch SPA dynamic elements
+            if (!window.chessThemeInterval) {
+                window.chessThemeInterval = setInterval(forceThemeClasses, 1000);
+            } else {
+                // Ensure the interval function is updated with latest theme variable
+                clearInterval(window.chessThemeInterval);
+                window.chessThemeInterval = setInterval(forceThemeClasses, 1000);
+            }
+            
+            // Manage AMOLED Pure Black styling stylesheet
+            var style = document.getElementById('chessmac-pureblack-style');
+            var pureBlackEnabled = \(appTheme == "dark");
+            if (pureBlackEnabled) {
+                if (!style) {
+                    style = document.createElement('style');
+                    style.id = 'chessmac-pureblack-style';
+                    style.innerHTML = `
+                        body, 
+                        #navigation, 
+                        .navigation, 
+                        .nav-menu, 
+                        .nav-container, 
+                        #sb, 
+                        .sb, 
+                        .layout-container, 
+                        #layout-container, 
+                        .game-layout-sidebar, 
+                        .board-layout-sidebar, 
+                        .main, 
+                        #main, 
+                        .main-layout, 
+                        .page-layout, 
+                        .board-layout-component, 
+                        .tab-container {
+                            background-color: #000000 !important;
+                            background: #000000 !important;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            } else {
+                if (style) style.remove();
+            }
+        })();
         """
         nsView.evaluateJavaScript(js, completionHandler: nil)
     }

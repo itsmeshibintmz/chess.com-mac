@@ -6,12 +6,13 @@ import SwiftUI
 @main
 struct ChessMacApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @AppStorage("appTheme") private var appTheme = "system"
 
     var body: some Scene {
         WindowGroup {
             ChessWebViewContainer()
                 .frame(minWidth: 1024, minHeight: 680)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(appTheme == "system" ? nil : (appTheme == "dark" ? .dark : .light))
         }
         .windowStyle(.hiddenTitleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
@@ -30,7 +31,7 @@ struct ChessMacApp: App {
         // Native Preferences Window (accessed via ⌘,)
         Settings {
             SettingsView()
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(appTheme == "system" ? nil : (appTheme == "dark" ? .dark : .light))
         }
     }
 }
