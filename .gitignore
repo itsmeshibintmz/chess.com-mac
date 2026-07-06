@@ -1,0 +1,27 @@
+# Xcode Build & State Files
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+
+# Workspace settings (keep shared settings, ignore user states)
+xcuserdata/
+*.xcworkspace
+!default.xcworkspace
+
+# macOS Files
+.DS_Store
+FilesToTrash
+*.iconset/
+
+# Security / Secrets
+ChessMac/Resources/Secrets.plist
