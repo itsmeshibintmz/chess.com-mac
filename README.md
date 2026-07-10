@@ -1,5 +1,10 @@
 # Chess.com macOS Application
 
+[![GitHub Downloads](https://img.shields.io/github/downloads/itsmeshibintmz/chess.com-mac/total?style=flat-square&logo=apple&label=Downloads&color=2d5a27)](https://github.com/itsmeshibintmz/chess.com-mac/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/itsmeshibintmz/chess.com-mac?style=flat-square&logo=github&label=Stars&color=81b64c)](https://github.com/itsmeshibintmz/chess.com-mac/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/itsmeshibintmz/chess.com-mac?style=flat-square&logo=github&label=Forks&color=4a90d9)](https://github.com/itsmeshibintmz/chess.com-mac/forks)
+[![Latest Release](https://img.shields.io/github/v/release/itsmeshibintmz/chess.com-mac?style=flat-square&logo=github&label=Latest&color=555)](https://github.com/itsmeshibintmz/chess.com-mac/releases/latest)
+
 A beautiful, native-feel macOS desktop app for playing on **Chess.com**. Built with macOS design guidelines in mind, this app features smooth window effects, a custom navigation pill dock, and a built-in ad-blocker.
 
 ---
